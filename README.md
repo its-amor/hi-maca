@@ -1,62 +1,74 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Proposal</title>
-  <style>
-    body {
-      text-align: center;
-      margin-top: 100px;
+import React, { useState, useEffect, useRef } from "react";
+
+const Proposal: React.FC = () => {
+  const [showFinalMessage, setShowFinalMessage] = useState(false);
+  const [hovering, setHovering] = useState(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  const handleNoHover = () => {
+    setHovering(!hovering);
+  };
+
+  const handleYesClick = () => {
+    setShowFinalMessage(true);
+    if (audioRef.current) {
+      audioRef.current.play().catch((error) => {
+        console.error("Audio playback error:", error);
+      });
     }
-    button {
-      margin: 10px;
-      padding: 10px;
-      font-size: 18px;
+  };
+
+  useEffect(() => {
+    if (showFinalMessage && audioRef.current) {
+      audioRef.current.play().catch((error) => {
+        console.error("Audio playback error:", error);
+      });
     }
-    #noButton {
-      position: relative;
-    }
-  </style>
-</head>
-<body>
-  <h1>Samahan mo ko sa Balik Sinta?</h1>
+  }, [showFinalMessage]);
 
-  <div id="initialState">
-    <button id="yesButton">Oo</button>
-    <button id="noButton">Hindi</button>
-  </div>
+  return (
+    <div style={{ textAlign: "center", marginTop: "100px" }}>
+      <h1>Samahan mo ko sa Balik Sinta?</h1>
+      {showFinalMessage ? (
+        <div>
+          <h2>Yay! Sama tayo!</h2>
+          <img
+            src="https://media.giphy.com/media/vtm4qejJIl1ERPIrbA/giphy.gif?cid=790b761161qbveksnfz3j3d8jybu4g8lo3najnw5i6i7tatv&ep=v1_gifs_search&rid=giphy.gif&ct=g"
+            alt="Kinikilig"
+            style={{ width: "300px", height: "300px" }}
+          />
+          <audio ref={audioRef} controls autoPlay>
+            <source
+              src="https://www.dropbox.com/scl/fi/p0b33ukgy9x8fg0ken1lv/James-Reid-and-Nadine-Lustre-Hanap-Hanap-Lyric-Video-with-Chords.mp3?rlkey=civw7lj94doubszp9svky8zxy&raw=1"
+              type="audio/mpeg"
+            />
+            Your browser does not support the audio element.
+          </audio>
+        </div>
+      ) : (
+        <div>
+          <button
+            style={{ margin: "10px", padding: "10px", fontSize: "18px" }}
+            onClick={handleYesClick}
+          >
+            Oo
+          </button>
+          <button
+            id="noButton"
+            style={{
+              margin: "10px",
+              padding: "10px",
+              fontSize: "18px",
+              position: "relative",
+            }}
+            onMouseEnter={handleNoHover}
+          >
+            Hindi
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
 
-  <div id="finalMessage" style="display: none;">
-    <h2>Yay! Sama tayo!</h2>
-    <img
-      src="https://media.giphy.com/media/vtm4qejJIl1ERPIrbA/giphy.gif?cid=790b761161qbveksnfz3j3d8jybu4g8lo3najnw5i6i7tatv&ep=v1_gifs_search&rid=giphy.gif&ct=g"
-      alt="Kinikilig"
-      style="width: 300px; height: 300px;"
-    />
-    <audio controls autoplay>
-      <source
-        src="https://www.dropbox.com/scl/fi/p0b33ukgy9x8fg0ken1lv/James-Reid-and-Nadine-Lustre-Hanap-Hanap-Lyric-Video-with-Chords.mp3?rlkey=civw7lj94doubszp9svky8zxy&raw=1"
-        type="audio/mpeg"
-      />
-      Your browser does not support the audio element.
-    </audio>
-  </div>
-
-  <script>
-    const yesButton = document.getElementById("yesButton");
-    const noButton = document.getElementById("noButton");
-    const initialState = document.getElementById("initialState");
-    const finalMessage = document.getElementById("finalMessage");
-
-    yesButton.addEventListener("click", () => {
-      initialState.style.display = "none";
-      finalMessage.style.display = "block";
-    });
-
-    noButton.addEventListener("mouseenter", () => {
-      noButton.style.left = (noButton.style.left === "50px" ? "0px" : "50px");
-    });
-  </script>
-</body>
-</html>
+export default Proposal;
